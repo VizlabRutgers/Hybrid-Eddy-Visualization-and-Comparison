@@ -1,6 +1,8 @@
 # Hybrid-Eddy-Visualization-and-Comparison
 This is the Eddy visualization code for the hybrid eddy detection and also compare with winding angle and hybrid approach in this paper: https://doi.org/10.48550/arXiv.2305.08229
 
+![plot](./method_comparison.jpg)
+
 For the comarison, you need the hybrid eddy detection, OW eddy detection and winding angle eddy detection data.
 
 The hybrid eddy detection approach is here: https://github.com/VizlabRutgers/Hybrid-Eddy-detection  
