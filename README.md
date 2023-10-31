@@ -3,6 +3,8 @@ This is the Eddy visualization code for the hybrid eddy detection and also compa
 
 ![plot](./method_comparison.jpg)
 
+![plot](./more_datasets.jpg)
+
 For the comarison, you need the hybrid eddy detection, OW eddy detection and winding angle eddy detection data.
 
 The hybrid eddy detection approach is here: https://github.com/VizlabRutgers/Hybrid-Eddy-detection  
