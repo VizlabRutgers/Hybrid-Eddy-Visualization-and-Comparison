@@ -1,4 +1,5 @@
-function [eddyHistory] = eddyPathProcess(clockEddy,conterclockEddy,eddyPath,eddyIndex,G,SizeLimits)
+function [eddyHistory] = eddyPathProcess(clockEddy,conterclockEddy,eddyPath, ...
+    G,livingFrameLimit)
 %clockEddy: clockwise eddy data
 % conterclockEddy:counterclockwise eddy data
 % eddyPath: eddy's paths from Graph
@@ -15,14 +16,16 @@ function [eddyHistory] = eddyPathProcess(clockEddy,conterclockEddy,eddyPath,eddy
 
     
 
-    for i = 1:1:length(eddyIndex)
-        thisEddyHistoryIndex=eddyIndex(i);
+    for i = 1:1:length(eddyPath)
+        if(i==180)
+            test = 0;
+        end
 
-        subpath=eddyPath{thisEddyHistoryIndex};
+        subpath=eddyPath{i};
         subGraphMap=subgraph(G,subpath);
         eddyIndividualPaths=getpaths(subGraphMap);
         subEddyNodes=table2cell(subGraphMap.Nodes);
-
+        eddyHistoryTemp=[];
 
 %         figure,
 %         plot(subGraphMap)
@@ -34,13 +37,14 @@ function [eddyHistory] = eddyPathProcess(clockEddy,conterclockEddy,eddyPath,eddy
         for pathIndex=1:1:length(eddyIndividualPaths)
             individualPath=eddyIndividualPaths{pathIndex};
             individualPath=arrayfun(@(x) subEddyNodes(x), individualPath)';
-            if(size(individualPath,1)<=SizeLimits)
+            if(size(individualPath,1)<=livingFrameLimit)
                 continue;
             end
+
             thisEddy=cellfun(@(x) strsplit(x, '.'), individualPath, 'UniformOutput', false);
             thisEddy=str2double(vertcat(thisEddy{:})).';
 
-            eddyHistoryTemp=[];
+
 
 
             [~, eddyTimeFrames] = size(thisEddy);
@@ -54,8 +58,6 @@ function [eddyHistory] = eddyPathProcess(clockEddy,conterclockEddy,eddyPath,eddy
                     eddyHistoryTemp = [eddyHistoryTemp;clockwiseCheck];
                 elseif(~isempty(conclockwiseCheck)&&isempty(clockwiseCheck))
                     eddyHistoryTemp = [eddyHistoryTemp;conclockwiseCheck];
-                else
-                    error('Error: Not clockwise or conterclockwise');
                 end
 
             end
@@ -63,7 +65,9 @@ function [eddyHistory] = eddyPathProcess(clockEddy,conterclockEddy,eddyPath,eddy
             
 
         end
-        eddyHistory{end+1}=eddyHistoryTemp;
+        if(~isempty(eddyHistoryTemp))
+            eddyHistory{end+1}=eddyHistoryTemp;
+        end
         
     end
     eddyHistory=eddyHistory';

@@ -1,4 +1,4 @@
-function [] = eddyVis(pathIndex,G,eddyPath,eddyPathHistory,dataFilePath,srcData)
+function [] = eddyVis(pathIndex,G,eddyPath,eddyPathHistory,dataFilePath,srcData, property)
 % pathindex: Get Index of individual path history
 % eddyPathHistory: The trace history of this eddy
 % dataFilePath: The base path datafile for Feature Tracking
@@ -9,21 +9,21 @@ function [] = eddyVis(pathIndex,G,eddyPath,eddyPathHistory,dataFilePath,srcData)
 close all;
 
 % Video Recorder
-v = VideoWriter('eddyHistory_2D_redsea.mp4','MPEG-4');
+v = VideoWriter('eddyHistory_2D_redsea.mp4');
 v.FrameRate=1;
 v.Quality=100;
 open(v);
 
-v2 = VideoWriter('eddyHistory_3D_redsea.mp4','MPEG-4');
+v2 = VideoWriter('eddyHistory_3D_redsea.mp4');
 v2.FrameRate=1;
 v2.Quality=100;
 open(v2);
 
 
 % Read coordinates
-x_val = double(ncread(srcData, "XC"));
-y_val = double(ncread(srcData, "YC"));
-z_val = double(ncread(srcData, "Z_MIT40"));
+x_val = double(ncread(srcData, property.x));
+y_val = double(ncread(srcData, property.y));
+z_val = double(ncread(srcData, property.z));
 resolution = 0.04;
 
 % zVal_Unique = unique(z_val,'rows');
@@ -50,14 +50,14 @@ pause(5);
 
 % Compute seabed data
 
-coastRegion = ncread(srcData,"TEMP",[1,1,1,1], [length(x_val),length(y_val),length(z_val),1], [1,1,1,1]);
-coast2D=~(coastRegion(:,:,1));
-[B,L] = bwboundaries(coast2D,'holes');
-coastRegion(~logical(coastRegion))=-1;
-[coastFaces,coastVerts]=isosurface(x_val,y_val,z_val,permute(coastRegion,[2,1,3]),-1);
-
-save('coastFaceData_RS.mat','coastFaces');
-save('coastVertData_RS.mat','coastVerts');
+% coastRegion = ncread(srcData,property.temp,[1,1,1,1], [length(x_val),length(y_val),length(z_val),1], [1,1,1,1]);
+% coast2D=~(coastRegion(:,:,1));
+% [B,L] = bwboundaries(coast2D,'holes');
+% coastRegion(~logical(coastRegion))=-1;
+% [coastFaces,coastVerts]=isosurface(x_val,y_val,z_val,permute(coastRegion,[2,1,3]),-1);
+% 
+% save('coastFaceData_RS.mat','coastFaces');
+% save('coastVertData_RS.mat','coastVerts');
 
 % Load seabed data
 % coastFaces = load('coastFaceData_NA.mat','coastFaces').coastFaces;
@@ -65,6 +65,9 @@ save('coastVertData_RS.mat','coastVerts');
 
 % coastFaces = load('coastFaceData_NP.mat','coastFaces').coastFaces;
 % coastVerts = load('coastVertData_NP.mat','coastVerts').coastVerts;
+
+coastFaces = load('coastFaceData_RS.mat','coastFaces').coastFaces;
+coastVerts = load('coastVertData_RS.mat','coastVerts').coastVerts;
 
 maxFrame = cellfun(@(x) size(x,1), eddyPathHistory);
 maxFrame = max(maxFrame);
@@ -89,11 +92,11 @@ for i = 1:1:maxFrame
     stride_2D = [1,1,1];
 
 
-    u_val = ncread(srcData, "U", startLoc, count, stride);
-    v_val = ncread(srcData, "V",startLoc, count, stride);
+    u_val = ncread(srcData, property.u, startLoc, count, stride);
+    v_val = ncread(srcData, property.v,startLoc, count, stride);
 %     w_val = ncread(srcData, "W",startLoc, count, stride);
 %     eta_val = ncread(srcData,"ETA",startLoc_2D, count_2D, stride_2D);
-    temp_val = ncread(srcData,"TEMP",startLoc, count, stride);
+    temp_val = ncread(srcData,property.temp,startLoc, count, stride);
 %     salinity_val = ncread(srcData,"salt",startLoc, count, stride);
     [x_Rgrid3D,y_Rgrid3D,z_Rgrid3D] = ndgrid(x_val,y_val,z_val);
     velocity_mag_val = (sqrt(u_val.^2 +v_val.^2));
@@ -348,11 +351,11 @@ for i = 1:1:maxFrame
                 end      
             end
         end
-        for boundaryIndex = 1:1:size(B,1)
-            coastboundary=B{boundaryIndex};
-            plot(ax2,x_val(coastboundary(:,1)), y_val(coastboundary(:,2)),'k','LineWidth',4);
-            hold(ax2,'on');
-        end
+%         for boundaryIndex = 1:1:size(B,1)
+%             coastboundary=B{boundaryIndex};
+%             plot(ax2,x_val(coastboundary(:,1)), y_val(coastboundary(:,2)),'k','LineWidth',4);
+%             hold(ax2,'on');
+%         end
     end
     
     camlight(ax2);
@@ -380,6 +383,7 @@ for i = 1:1:maxFrame
 
 
     coastTemp=temp_val(:,:,1);
+    coastTemp(isnan(coastTemp))=100;
     coastTemp(~logical(coastTemp))=100;
     [coastPoints,coast]=contourf(ax2,x_Rgrid2D,y_Rgrid2D,coastTemp,[100 100]);
     hold(ax2,'on');    
@@ -389,7 +393,7 @@ for i = 1:1:maxFrame
     cb=colorbar(ax2);
 %     colormap(ax2,"hot");
     cb.Label.String="Net Velocity";
-    clim(ax2,[0,0.3]);
+    caxis(ax2,[0,0.3]);
     cb.FontSize = 48;
 
     xlim(ax2,[41,50]);

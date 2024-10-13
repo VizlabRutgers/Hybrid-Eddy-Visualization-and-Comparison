@@ -1,4 +1,4 @@
-function [outputArg1,outputArg2] = eddyMethodComparison(owDataFilePath,windingAngleDataFilePath,srcData,eddyPathHistory,frameIndex)
+function [outputArg1,outputArg2] = eddyMethodComparison(owDataFilePath,windingAngleDataFilePath,srcData,eddyPathHistory,frameIndex, property)
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -6,10 +6,10 @@ function [outputArg1,outputArg2] = eddyMethodComparison(owDataFilePath,windingAn
 
 srcpath=srcData;
 
-x_val = double(ncread(srcpath, "XC"));
-y_val = double(ncread(srcpath, "YC"));
-z_val = double(ncread(srcpath, "Z_MIT40"));
-totalFrames = double(ncread(srcpath, 'T_AX'));
+x_val = double(ncread(srcpath, property.x));
+y_val = double(ncread(srcpath, property.y));
+z_val = double(ncread(srcpath, property.z));
+totalFrames = double(ncread(srcpath, property.time));
 
 
 
@@ -25,10 +25,10 @@ ax1 = axes(f1);
 
 
 
-v = VideoWriter('eddyMethodComparison_2D_redsea.mp4','MPEG-4');
-v.FrameRate=1;
-v.Quality=100;
-open(v);
+% v = VideoWriter('eddyMethodComparison_2D_redsea.mp4');
+% v.FrameRate=1;
+% v.Quality=100;
+% open(v);
 
 %% ----------Loop of timeframes---------
 % You could loop here instead of one single frame
@@ -37,10 +37,10 @@ for frame =frameIndex
 
 
     startLoc = [1,1,1,frame];
-    count = [length(x_val),length(y_val),length(z_val),1];
+    count = [length(x_val),length(y_val),1,1];
     stride = [1,1,1,1];
-    u_val = ncread(srcData, "U", startLoc, count, stride);
-    v_val = ncread(srcData, "V",startLoc, count, stride);
+    u_val = ncread(srcData, property.u, startLoc, count, stride);
+    v_val = ncread(srcData, property.v,startLoc, count, stride);
 
     % w_val = ncread(srcpath, "W",startLoc, count, stride);
     % eta_val = ncread(srcpath, "ETA",[1,1,frame], [length(x_val),length(y_val),1], [1,1,1]);
@@ -77,22 +77,78 @@ for frame =frameIndex
     % Normalization
     ow_val = ow_val./(vel_mag.^2);
     
-    [x_Rgrid2D,y_Rgrid2D] = ndgrid(x_val,y_val);
+
+
+    x_test = x_val(1:450);
+    y_test = y_val(251:650);
+
+    u_test = u_val(1:450,251:650,1);
+    v_test = v_val(1:450,251:650,1);
+
+    u_test(isnan(u_test)) = 0;
+    v_test(isnan(v_test)) = 0;
+
+    vel_mag_test = sqrt(u_test.^2+v_test.^2);
+
+
+
+    [x_Rgrid2D,y_Rgrid2D] = ndgrid(x_test,y_test);
     DataSize_2D = [length(x_val), length(y_val)];
     
     cla(ax1);
 
-    I0 = imagesc(ax1, x_val, y_val, ~(vel_mag(:,:,1)'));
+    I0 = uimagesc(ax1, x_test, y_test, (~(vel_mag_test')));
     color_map=[1 1 1; 0.3 0.3 0.3];
     colormap(color_map);
     hold on
 
-    quiver(ax1,x_Rgrid2D,y_Rgrid2D,u_val(:,:,1),v_val(:,:,1),"AutoScaleFactor",1.5,"LineWidth",1);
+
+    % color quiver
+    q = quiver(ax1,x_Rgrid2D(1:5:end,1:5:end),y_Rgrid2D(1:5:end,1:5:end),u_test(1:5:end,1:5:end),v_test(1:5:end,1:5:end),"AutoScaleFactor",2.5,"LineWidth",2);
     set(ax1,'YDir','normal');
     hold on
     
+    x1 = xlabel(ax1,'Longitude');
+    y1 = ylabel(ax1,'Latitude');
+    daspect(ax1,[1,1,1]);
+
+    ax1.FontSize=24;
+    x1.FontSize = 48;
+    y1.FontSize = 48;
+
+    %// Compute the magnitude of the vectors
+    mags = sqrt(sum(cat(2, q.UData(:), q.VData(:), ...
+                reshape(q.WData, numel(q.UData), [])).^2, 2));
     
+    cmap = jet(255);
+
+    %// Get the current colormap
+    currentColormap = cmap;
+    colormap(cmap);
     
+    %// Now determine the color to make each arrow using a colormap
+    [~, ~, ind] = histcounts(mags, size(currentColormap, 1));
+    
+    %// Now map this to a colormap to get RGB
+    cmap = uint8(ind2rgb(ind(:), currentColormap) * 255);
+    cmap(:,:,4) = 255;
+    cmap = permute(repmat(cmap, [1 3 1]), [2 1 3]);
+    
+    %// We repeat each color 3 times (using 1:3 below) because each arrow has 3 vertices
+    set(q.Head, ...
+        'ColorBinding', 'interpolated', ...
+        'ColorData', reshape(cmap(1:3,:,:), [], 4).');   %'
+    
+    %// We repeat each color 2 times (using 1:2 below) because each tail has 2 vertices
+    set(q.Tail, ...
+        'ColorBinding', 'interpolated', ...
+        'ColorData', reshape(cmap(1:2,:,:), [], 4).');
+
+    cb = colorbar();
+%     colormap(ax2,"hot");
+    cb.Label.String="Velocity Magnitude";
+    caxis(ax2,[0,0.3]);
+    cb.FontSize = 28;
     
     %% ----------Winding Angle Method---------
     
