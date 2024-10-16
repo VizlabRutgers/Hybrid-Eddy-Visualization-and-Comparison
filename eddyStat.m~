@@ -185,7 +185,7 @@ EddyNumRecord = eddyStatFunc(clockEddy,conterclockEddy,eddyHistory,srcData, ...
 
 %% Eddy path statistics
 % Analyze the statistical change of the eddy over the whole path
-eddyPathStat(eddyHistory,srcData, property,dataFilePath);
+eddyPathStat();
 
 %% Eddy global distribution Visualization
 % You could use this to visualize global eddy distribution
@@ -206,7 +206,7 @@ eddyIndividualVisIndex = 10063;
 eddyIndividualVis(eddyPathIndex,G,eddyPath,eddyHistory,dataFilePath,srcData, property, eddyIndividualVisIndex);
 
 %% Visualize path
-% You could use this to visualize an eddy path
+% You could use this to visualize an all eddies
 % You need to change the variable name for the NC file inside the function
 % This is the function that generate videos
 
@@ -224,8 +224,7 @@ eddyVis(eddyPathIndex,G,eddyPath,eddyHistory,dataFilePath,srcData, property);
 
 
 
-%% Eddy Method comparison
-% Compare with different methods (Hybrid / OW / winding angle)
+%% Eddy global comparison
 frameIndex = 1;
 windingAngleDataFilePath = "";
 eddyMethodComparison(owDataFilePath,windingAngleDataFilePath,srcData, allEddy, frameIndex, property);
@@ -250,6 +249,8 @@ for eddyNumber=10063
 
     evaluationResult = eddyInterpolation(eddyPathIndex,G,eddyPath,eddyHistory,dataFilePath,srcData, property, eddyNumber);
     interpolationRecord = [interpolationRecord; evaluationResult];
+
+
     
 end
 
