@@ -1,4 +1,4 @@
-function [] = eddyIndividual3DVis_inner(data,ax2,z_val,stretchMode,index)
+function [] = eddyIndividual3DVis_inner(data,ax2,z_val,stretchMode,index,wholePathSize)
 %EDDYINDIVIDUAL3DVIS_INNER 
 % data is the uocd style
 % an axes is necessary for the visualization
@@ -39,12 +39,15 @@ function [] = eddyIndividual3DVis_inner(data,ax2,z_val,stretchMode,index)
         y = y+interpolatedSurfaceOffset_Y;
 
         
+        
         % Get the boundary of this eddy structure
         bound = boundary(x,y,z,0.9);
-        localOb = trimesh(bound,x,y,z,sqrt(u_obj.^2+v_obj.^2), 'FaceAlpha', '0.5', 'EdgeAlpha', '0.5','Parent', ax2);
-%         localOb = trisurf(bound,x,y,z,sqrt(u_obj.^2+v_obj.^2), 'FaceAlpha', '0.9','EdgeColor','none','Parent', ax2);
-        localOb.SpecularExponent = 200;
-        localOb.AmbientStrength = 0.8;
-        hold(ax2,'on');
+        edgeAlpha = index / wholePathSize;
+        edgeAlpha = edgeAlpha*0.7;
+        if(edgeAlpha<0.3) 
+            edgeAlpha=0.3;
+        end
+        localOb = trimesh(bound,x,y,z,sqrt(u_obj.^2+v_obj.^2), 'FaceAlpha', '0.5', 'EdgeAlpha', edgeAlpha,'Parent',ax2);
+
 end
 

@@ -12,7 +12,7 @@ function [] = eddyGlobalStat(allEddy, FrameLimit, srcData,sizeLimit,patchSize, p
     x_val = double(ncread(srcData, property.x));
     y_val = double(ncread(srcData, property.y));
     z_val = double(ncread(srcData, property.z));
-    startLoc = [1,1,1,1];
+    startLoc = [1,1,1,FrameNum];
     count = [length(x_val),length(y_val),length(z_val),1];
     stride = [1,1,1,1];
     

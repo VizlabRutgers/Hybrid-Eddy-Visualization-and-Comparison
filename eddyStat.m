@@ -31,13 +31,13 @@ clear all;
 % owDataFilePath="../../FT_OW/1/";
 
 %% na data
-% dataFilePath = "../../NA_dataset/NA_new_1_25/19960101/"; % Output from the Hybrid Eddy Detection
+% dataFilePath = "/home/weiping/StorageDisk/NA_data_highResolution/FT_result/"; % Output from the Hybrid Eddy Detection
 % Path = dataFilePath+"Seperated Structures/";
 % trackTablePath = dataFilePath+dir(fullfile(dataFilePath,"*.trakTable")).name;
 % % The path of source file (.nc file)
 % 
 % % To open a remote dataset, use its URL:
-% srcData='http://antares.esm.rutgers.edu:8080/thredds/dodsC/MOM6/ESMG/NWA25/SIM3.0_v2/ocean_5days/19960101.ocean_5day.nc';
+% srcData='/home/weiping/StorageDisk/NA_data_highResolution/19960101.ocean_5day.nc';
 % owDataFilePath="../../FT_OW/1/";
 % 
 % 
@@ -64,6 +64,14 @@ clear all;
 % load("NA_eddy_path.mat");
 % load("NA_eddy_history.mat");
 % load("NA_eddy_graph.mat");
+% eddyPathIndex=1:1:length(eddyPath);
+% 
+% save("NA_eddy_clk_data.mat", "clockEddy");
+% save("NA_eddy_conclk_data.mat", "conterclockEddy");
+% save("NA_eddy_data.mat", "allEddy");
+% save("NA_eddy_path.mat", "eddyPath");
+% save("NA_eddy_history.mat", "eddyHistory");
+% save("NA_eddy_graph.mat", "G");
 % eddyPathIndex=1:1:length(eddyPath);
 
 % 
@@ -105,6 +113,7 @@ load("Redsea_eddy_data.mat");
 load("Redsea_eddy_path.mat");
 load("Redsea_eddy_history.mat");
 load("Redsea_eddy_graph.mat");
+eddyPathIndex=1:1:length(eddyPath);
 
 % save("Redsea_eddy_clk_data.mat", "clockEddy");
 % save("Redsea_eddy_conclk_data.mat", "conterclockEddy");
@@ -112,7 +121,7 @@ load("Redsea_eddy_graph.mat");
 % save("Redsea_eddy_path.mat", "eddyPath");
 % save("Redsea_eddy_history.mat", "eddyHistory");
 % save("Redsea_eddy_graph.mat", "G");
-eddyPathIndex=1:1:length(eddyPath);
+% eddyPathIndex=1:1:length(eddyPath);
 
 %% Parameters of limitation
 
@@ -176,6 +185,8 @@ eddyHistory = eddyPathProcess(clockEddy,conterclockEddy,eddyPath, ...
     G,livingFrameLimit);
 
 
+
+
 %% Global eddy movement statistics plots
 % Get the global eddy path statistics information. 
 % Including movement distance, existing time, 
@@ -185,8 +196,37 @@ EddyNumRecord = eddyStatFunc(clockEddy,conterclockEddy,eddyHistory,srcData, ...
 
 %% Eddy path statistics
 % Analyze the statistical change of the eddy over the whole path
-eddyPathStat(eddyHistory,srcData, property,dataFilePath);
+eddyPathStatResult = eddyPathStat(eddyHistory,srcData, property,dataFilePath);
+eddyPathStatResult = eddyPathStatResult';
+eddyPathStatWhole = {};
+for i = 1:1: length(eddyPathStatResult)
+    eddyPathStatWhole = [eddyPathStatWhole; table2cell(eddyPathStatResult{i})];
+end
 
+% figure,
+% scatter(cell2mat(eddyPathStatWhole(:,5)), cell2mat(eddyPathStatWhole(:,4)));
+% xlabel("surface radius (pixel)");
+% ylabel("depth (meter)");
+% 
+% figure,
+% scatter(cell2mat(eddyPathStatWhole(:,6)), cell2mat(eddyPathStatWhole(:,4)));
+% xlabel("volume");
+% ylabel("depth (meter)");
+% 
+% figure,
+% scatter(cell2mat(eddyPathStatWhole(:,7)), cell2mat(eddyPathStatWhole(:,4)));
+% xlabel("minimum OW");
+% ylabel("depth (meter)");
+% 
+% figure,
+% scatter(cell2mat(eddyPathStatWhole(:,8)), cell2mat(eddyPathStatWhole(:,4)));
+% xlabel("maximum angular");
+% ylabel("depth (meter)");
+% 
+% figure,
+% scatter(cell2mat(eddyPathStatWhole(:,8)), cell2mat(eddyPathStatWhole(:,7)));
+% xlabel("maximum angular");
+% ylabel("OW");
 %% Eddy global distribution Visualization
 % You could use this to visualize global eddy distribution
 % Including eddy number, vorticity, size, etc.
@@ -200,11 +240,30 @@ eddyGlobalStat(allEddy,frameLimit,srcData,radiusLimit,patchSize, property, globa
 % Show the vertical clip of the data
 eddyVis_vertClip(eddyPathNum,G,eddyPath,eddyHistory,dataFilePath,srcData, property);
 
-%% Visualize individual eddy
+%% Visualize individual eddy path
 % You could use this to visualize an individual eddy path
-eddyIndividualVisIndex = 10063;
-eddyIndividualVis(eddyPathIndex,G,eddyPath,eddyHistory,dataFilePath,srcData, property, eddyIndividualVisIndex);
+% eddyIndividualVisIndex = 13016;
+% eddyIndividualVisIndex = 10334;
+% eddyIndividualVisIndex = 9802;
+% eddyIndividualVisIndex = 7635;
+% eddyIndividualVisIndex = 9037;
+% eddyIndividualVisIndex = 9947;
+% eddyIndividualVisIndex = 10150;
+% eddyIndividualVisIndex = 2155;
+% eddyIndividualVisIndex = 3670;
+% eddyIndividualVisIndex = 5069;
+eddyIndividualVisIndex = 10024;
+eddyIndividualVisIndex = 12433;
+stretchMode = 2;
 
+eddyPathIndex=1:1:length(eddyPath);
+eddyIndividualVisIndex = 11;
+eddyIndividualVis(eddyPathIndex,G,eddyPath,eddyHistory,dataFilePath,srcData, property, eddyIndividualVisIndex,stretchMode);
+
+%% Visualize Global eddy
+% You could use this to visualize global distribution
+
+eddyGlobalVis(allEddy, 1, srcData, radiusLimit, property,dataFilePath);
 %% Visualize path
 % You could use this to visualize an eddy path
 % You need to change the variable name for the NC file inside the function
@@ -237,6 +296,12 @@ eddyMethodComparison(owDataFilePath,windingAngleDataFilePath,srcData, allEddy, f
 centroid_test = allEddy(:,[1,2,1,2,15,16]);
 centroid_test(:,1) = (centroid_test(:,1)-30)/0.04;
 centroid_test(:,2) = (centroid_test(:,2)-10)/0.04;
+
+%% Self-define
+frameIndex = 19:1:20;
+eddyPathIndex = 11;
+
+selfDefineVis(allEddy, frameIndex, eddyPathIndex, srcData, property,dataFilePath,eddyHistory);
 
 %% Eddy interpolation
 

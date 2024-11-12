@@ -1,4 +1,4 @@
-function [outputArg1,outputArg2] = eddyIndividualVis(pathIndex,G,eddyPath,eddyPathHistory,dataFilePath,srcData, property, eddyIndex)
+function [outputArg1,outputArg2] = eddyIndividualVis(pathIndex,G,eddyPath,eddyPathHistory,dataFilePath,srcData, property, eddyIndex,stretchMode)
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
 close all;
@@ -173,7 +173,8 @@ for differentEddyIndex=eddyIndex
     maxY=max(eddyHistory(:,2));
     
     
-    for index=1:1:size(eddyHistory,1)
+    wholePathSize = size(eddyHistory,1);
+    for index=1:1:wholePathSize
         % Get each eddy in this eddy path history at this frame 
         % Plot the boundary of this eddy in 2D
 
@@ -193,15 +194,20 @@ for differentEddyIndex=eddyIndex
         BoundaryPlot_handle = plot(ax1,pos(1)+r*sin(t),pos(2)+r*cos(t),'k','linewidth',6);
         hold(ax1,'on');
 
-        eddyIndividual3DVis_inner(data,ax2,z_val)
+        eddyIndividual3DVis_inner(data,ax2,z_val,stretchMode,index,wholePathSize);
     end      
 end
 
 set(ax2,'ZDir','reverse');
 view(3)
-daspect([1 1 500])
+daspect([1 1 100])
 
 
+grid on;
+
+% xticklabels("")
+% yticklabels("")
+% zticklabels("")
 
 
 camlight(ax2);
@@ -234,15 +240,13 @@ cb.Label.String="Net Velocity";
 caxis(ax2,[0,0.3]);
 cb.FontSize = 48;
 
-xlim(ax2,[35,38]);
-ylim(ax2,[21,25]);
-
-
-zlim(ax2,[0,50]);
+% xlim(ax2,[35,38]);
+% ylim(ax2,[21,25]);
+% zlim(ax2,[0,50]);
 set(ax2,'ZDir','reverse');
 % daspect(ax2,[1,1,800]);
 
-pbaspect(ax2,[1,1,1])
+% pbaspect(ax2,[1,1,1])
 
 if(size(pathIndex)==1)
     title(ax2,"eddy "+int2str(pathIndex)+" from NA dataset Frame"+num2str(FrameNum));
