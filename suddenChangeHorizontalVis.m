@@ -1,0 +1,187 @@
+function [] = suddenChangeHorizontalVis(srcData, property, cutoffDepthIndex, ...
+    prevEddyData,nextEddyData, currentLayer, prevTimestep, nextTimestep, cutoffDepthFlag, ow_val_prev,ow_val_next)
+%UNTITLED 此处显示有关此函数的摘要
+%   此处显示详细说明
+
+x_val = ncread(srcData, property.x);
+y_val = ncread(srcData, property.y);
+z_val = ncread(srcData, property.z);
+cutoffDepth = z_val(cutoffDepthIndex);
+
+if(currentLayer == cutoffDepthIndex)
+    prevEddy_cutoff_u = ncread(srcData, property.u, [1,1,currentLayer, prevTimestep], [500,500,1,1]);
+    nextEddy_cutoff_u = ncread(srcData, property.u, [1,1,currentLayer, nextTimestep], [500,500,1,1]);
+    prevEddy_cutoff_v = ncread(srcData, property.v, [1,1,currentLayer, prevTimestep], [500,500,1,1]);
+    nextEddy_cutoff_v = ncread(srcData, property.v, [1,1,currentLayer, nextTimestep], [500,500,1,1]);
+    
+    prevEddyDataInCurrDepth = prevEddyData(prevEddyData(:,5)==z_val(currentLayer),:);
+    nextEddyDataInCurrDepth = nextEddyData(nextEddyData(:,5)==z_val(currentLayer),:);
+    
+    x_lowerBound = min(min(prevEddyDataInCurrDepth(:,3))-0.5, min(nextEddyDataInCurrDepth(:,3))-0.5);
+    x_upperBound = max(max(prevEddyDataInCurrDepth(:,3))+0.5, max(nextEddyDataInCurrDepth(:,3))+0.5);
+    y_lowerBound = min(min(prevEddyDataInCurrDepth(:,4))-0.5, min(nextEddyDataInCurrDepth(:,4))-0.5);
+    y_upperBound = max(max(prevEddyDataInCurrDepth(:,4))+0.5, max(nextEddyDataInCurrDepth(:,4))+0.5);
+    
+    
+    
+    figure,
+    
+    imagesc(x_val,y_val,ow_val_prev(:,:,currentLayer)');
+    hold on
+    quiver(x_val, y_val,prevEddy_cutoff_u',prevEddy_cutoff_v', 3, 'Color','k',"DisplayName","velocity vectors");
+    hold on
+    scatter(prevEddyDataInCurrDepth(1,1), prevEddyDataInCurrDepth(1,2), 200, ".r","DisplayName","eddy center");
+    xlabel("longitude");
+    ylabel("latitude");
+    title("velocity field on the cutoff depth (layer "+ num2str(currentLayer) +") in the timestep " + num2str(prevTimestep));
+    xlim([x_lowerBound, x_upperBound]);
+    ylim([y_lowerBound, y_upperBound]);
+    daspect([1 1 1]);
+    set(gca, "YDir", "normal");
+
+    hold off
+    cb = colorbar();
+    caxis([-0.2,0]);
+    cb.Label.String = "OW";
+    legend show
+    set(gca, "FontSize", 22);
+    
+    
+    figure,
+    imagesc(x_val,y_val,ow_val_next(:,:,currentLayer)');
+    hold on
+    quiver(x_val, y_val,nextEddy_cutoff_u',nextEddy_cutoff_v',3, 'Color','k',"DisplayName","velocity vectors");
+    hold on
+    scatter(nextEddyDataInCurrDepth(1,1), nextEddyDataInCurrDepth(1,2), 200,".r","DisplayName","eddy center");
+    xlabel("longitude");
+    ylabel("latitude");
+    title("velocity field on the cutoff depth (layer "+ num2str(currentLayer) +") in the timestep " + num2str(nextTimestep));
+    xlim([x_lowerBound, x_upperBound]);
+    ylim([y_lowerBound, y_upperBound]);
+    daspect([1 1 1]);
+    set(gca, "YDir", "normal");
+    hold off
+    cb = colorbar();
+    caxis([-0.2,0]);
+    cb.Label.String = "OW";
+    legend show
+    set(gca, "FontSize", 22);
+else
+    if(cutoffDepthFlag == 1)
+        % prevEddy > nextEddy
+        prevEddy_cutoff_u = ncread(srcData, property.u, [1,1,currentLayer, prevTimestep], [500,500,1,1]);
+        nextEddy_cutoff_u = ncread(srcData, property.u, [1,1,currentLayer, nextTimestep], [500,500,1,1]);
+        prevEddy_cutoff_v = ncread(srcData, property.v, [1,1,currentLayer, prevTimestep], [500,500,1,1]);
+        nextEddy_cutoff_v = ncread(srcData, property.v, [1,1,currentLayer, nextTimestep], [500,500,1,1]);
+        
+        prevEddyDataInCurrDepth = prevEddyData(prevEddyData(:,5)==z_val(currentLayer),:);
+        
+        x_lowerBound = min(min(prevEddyDataInCurrDepth(:,3))-0.5);
+        x_upperBound = max(max(prevEddyDataInCurrDepth(:,3))+0.5);
+        y_lowerBound = min(min(prevEddyDataInCurrDepth(:,4))-0.5);
+        y_upperBound = max(max(prevEddyDataInCurrDepth(:,4))+0.5);
+        
+        
+        
+        figure,
+        imagesc(x_val,y_val,ow_val_prev(:,:,currentLayer)');
+        hold on
+        quiver(x_val, y_val,prevEddy_cutoff_u',prevEddy_cutoff_v', 3, 'Color','k',"DisplayName","velocity vectors");
+        hold on
+        scatter(prevEddyDataInCurrDepth(1,1), prevEddyDataInCurrDepth(1,2), 200, ".r","DisplayName","eddy center");
+        xlabel("longitude");
+        ylabel("latitude");
+        title("velocity field on the cutoff depth (layer "+ num2str(currentLayer) +") in the timestep " + num2str(prevTimestep));
+        xlim([x_lowerBound, x_upperBound]);
+        ylim([y_lowerBound, y_upperBound]);
+        daspect([1 1 1]);
+        hold off
+        cb = colorbar();
+        caxis([-0.2,0]);
+        cb.Label.String = "OW";
+        set(gca, "YDir", "normal");
+        legend show
+        set(gca, "FontSize", 22);
+        
+        
+        figure,
+        imagesc(x_val,y_val,ow_val_next(:,:,currentLayer)');
+        hold on
+        quiver(x_val, y_val,nextEddy_cutoff_u',nextEddy_cutoff_v',3, 'Color','k',"DisplayName","velocity vectors");
+        xlabel("longitude");
+        ylabel("latitude");
+        title("velocity field on the cutoff depth (layer "+ num2str(currentLayer) +") in the timestep " + num2str(nextTimestep));
+        xlim([x_lowerBound, x_upperBound]);
+        ylim([y_lowerBound, y_upperBound]);
+        daspect([1 1 1]);   
+%         txt = "eddy is not detected at layer "+ num2str(currentLayer) +" in the timestep " + num2str(prevTimestep);
+%         text(4,0.5,txt)        
+        hold off
+        cb = colorbar();
+        caxis([-0.2,0]);
+        cb.Label.String = "OW";
+        set(gca, "YDir", "normal");
+        legend show
+        set(gca, "FontSize", 22);
+    elseif(cutoffDepthFlag == -1)
+        % prevEddy < nextEddy
+        prevEddy_cutoff_u = ncread(srcData, property.u, [1,1,currentLayer, prevTimestep], [500,500,1,1]);
+        nextEddy_cutoff_u = ncread(srcData, property.u, [1,1,currentLayer, nextTimestep], [500,500,1,1]);
+        prevEddy_cutoff_v = ncread(srcData, property.v, [1,1,currentLayer, prevTimestep], [500,500,1,1]);
+        nextEddy_cutoff_v = ncread(srcData, property.v, [1,1,currentLayer, nextTimestep], [500,500,1,1]);
+        
+        nextEddyDataInCurrDepth = nextEddyData(nextEddyData(:,5)==z_val(currentLayer),:);
+        
+        x_lowerBound = min(min(nextEddyDataInCurrDepth(:,3))-0.5);
+        x_upperBound = max(max(nextEddyDataInCurrDepth(:,3))+0.5);
+        y_lowerBound = min(min(nextEddyDataInCurrDepth(:,4))-0.5);
+        y_upperBound = max(max(nextEddyDataInCurrDepth(:,4))+0.5);
+        
+        
+        
+        figure,
+        imagesc(x_val,y_val,ow_val_prev(:,:,currentLayer)');
+        hold on
+        quiver(x_val, y_val,prevEddy_cutoff_u',prevEddy_cutoff_v', 3, 'Color','k',"DisplayName","velocity vectors");
+        xlabel("longitude");
+        ylabel("latitude");
+        title("velocity field on the cutoff depth (layer "+ num2str(currentLayer) +") in the timestep " + num2str(prevTimestep));
+        xlim([x_lowerBound, x_upperBound]);
+        ylim([y_lowerBound, y_upperBound]);
+        daspect([1 1 1]);
+%         txt = "eddy is not detected at layer "+ num2str(currentLayer)+" in the timestep " + num2str(prevTimestep);       
+        hold off
+        cb = colorbar();
+        caxis([-0.2,0]);
+        cb.Label.String = "OW";
+        set(gca, "YDir", "normal");
+% 
+%         text(0.25,0.1,txt,'Units', 'normalized');
+%         annotation('textbox', 'String', txt, 'FitBoxToText','on', 'FontSize', 12);
+        legend show
+        set(gca, "FontSize", 22);
+
+
+        figure,
+        imagesc(x_val,y_val,ow_val_next(:,:,currentLayer)');
+        hold on;
+        quiver(x_val, y_val,nextEddy_cutoff_u',nextEddy_cutoff_v',3, 'Color','k',"DisplayName","velocity vectors");
+        hold on
+        scatter(nextEddyDataInCurrDepth(1,1), nextEddyDataInCurrDepth(1,2), 200,".r","DisplayName","eddy center");
+        xlabel("longitude");
+        ylabel("latitude");
+        title("velocity field on the cutoff depth (layer "+ num2str(currentLayer) +") in the timestep " + num2str(nextTimestep));
+        xlim([x_lowerBound, x_upperBound]);
+        ylim([y_lowerBound, y_upperBound]);
+        daspect([1 1 1]);
+        hold off
+        cb = colorbar();
+        caxis([-0.2,0]);
+        cb.Label.String = "OW";
+        set(gca, "YDir", "normal");
+        legend show
+        set(gca, "FontSize", 22);
+    end
+
+
+end

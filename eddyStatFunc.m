@@ -1,4 +1,4 @@
-function [EddyNumRecord] = eddyStatFunc(clockEddy,counterclockEddy,eddyHistory,srcData, property,durationLimits, frameLimits,z_val)
+function [clkEddies,conclkEddies,EddyNumRecord] = eddyStatFunc(clockEddy,counterclockEddy,eddyHistory,srcData, property,durationLimits, frameLimits,z_val)
 %UNTITLED3 Summary of this function goes here
 %   Detailed explanation goes here
 %% Stat - part 1 - load data

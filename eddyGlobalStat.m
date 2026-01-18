@@ -28,9 +28,69 @@ function [] = eddyGlobalStat(allEddy, FrameLimit, srcData,sizeLimit,patchSize, p
     eta_val = ncread(srcData,"ETA",startLoc_2D, count_2D, stride_2D);
     temp_val = ncread(srcData,property.temp,startLoc, count, stride);
 %     salinity_val = ncread(srcData,"salt",startLoc, count, stride);
-
+    velocity_mag_val = (sqrt(u_val.^2 +v_val.^2));
+    vel_mag = velocity_mag_val(351:388,22:58,1);
     xSize = length(x_val);
     ySize = length(y_val);
+    x_val_sub = x_val(351:388);
+    y_val_sub = y_val(22:58);
+    
+    figure,
+    ax1 = axes();
+    imagesc(ax1,x_val,y_val, eta_val', 'AlphaData', ~(~(eta_val')));
+    minMask = imregionalmin(eta_val');
+    [rowIdx, colIdx] = find(minMask);
+    x_real = x_val(colIdx);
+    y_real = y_val(rowIdx);
+    hold on
+    minScatter = scatter(ax1,x_real, y_real, 36, 'k', 'filled');
+    maxMask = imregionalmax(eta_val');
+    [rowIdx, colIdx] = find(maxMask);
+    x_real = x_val(colIdx);
+    y_real = y_val(rowIdx);
+    hold on
+    maxScatter = scatter(ax1,x_real, y_real, 36, 'r', 'filled');
+    hold off
+    set(ax1,"YDir", "normal");
+    daspect([1 1 1])
+    cb = colorbar();
+    legend([minScatter, maxScatter], "SSH minimum", "SSH maximum");
+    xlabel("Longitude");
+    ylabel("Latitude");
+    cb.Label.String = "SSH";
+    set(ax1, "FontSize", 24);
+    colormap(pink);
+    xlim([43, 46]);
+    ylim([10, 13]);
+    
+    figure,
+    ax1 = axes();
+    imagesc(ax1,x_val(351:388),y_val(22:58), vel_mag', 'AlphaData', ~(~(vel_mag')));
+    minMask = imregionalmin(vel_mag');
+    [rowIdx, colIdx] = find(minMask);
+    x_real = x_val_sub(colIdx);
+    y_real = y_val_sub(rowIdx);
+    hold on
+    minScatter = scatter(ax1,x_real, y_real, 36, 'b', 'filled');
+    maxMask = imregionalmax(vel_mag');
+    [rowIdx, colIdx] = find(maxMask);
+    x_real = x_val_sub(colIdx);
+    y_real = y_val_sub(rowIdx);
+    hold on
+    maxScatter = scatter(ax1,x_real, y_real, 36, 'k', 'filled');
+    hold off
+    set(ax1,"YDir", "normal");
+    daspect([1 1 1])
+    cb = colorbar();
+    legend([minScatter, maxScatter], "Veleocity magnitude minimum", "Veleocity magnitude maximum");
+    xlabel("Longitude");
+    ylabel("Latitude");
+    cb.Label.String = "Veleocity magnitude";
+    set(ax1, "FontSize", 24);
+    colormap(autumn);
+
+
+    
     
     if(isempty(FrameNum))
         FrameNum = FrameLimit.min:1:FrameLimit.max;
@@ -43,7 +103,7 @@ function [] = eddyGlobalStat(allEddy, FrameLimit, srcData,sizeLimit,patchSize, p
     xmin = x_val(1);
     ymin = y_val(1);
     
-    velocity_mag_val = (sqrt(u_val.^2 +v_val.^2));
+
     
     
     u_val_test = u_val(1:xSize-1,:,:) - u_val(2:xSize,:,:);

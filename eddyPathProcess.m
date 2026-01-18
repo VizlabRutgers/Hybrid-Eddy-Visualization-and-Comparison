@@ -7,9 +7,7 @@ function [eddyHistory] = eddyPathProcess(clockEddy,conterclockEddy,eddyPath, ...
 % G: eddy graph
 % SizeLimits: minimum of eddy size. eddy below this size will be filtered out 
 %   Detailed explanation goes here
-    clcIndex=1;
-    counterIndex=1;
-    NotRepeatFlag=0;
+
     eddyHistory = {};
 
 
@@ -58,6 +56,8 @@ function [eddyHistory] = eddyPathProcess(clockEddy,conterclockEddy,eddyPath, ...
                     eddyHistoryTemp = [eddyHistoryTemp;clockwiseCheck];
                 elseif(~isempty(conclockwiseCheck)&&isempty(clockwiseCheck))
                     eddyHistoryTemp = [eddyHistoryTemp;conclockwiseCheck];
+                else
+                    warning("Something wrong in eddy history")
                 end
 
             end

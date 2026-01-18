@@ -81,7 +81,7 @@ elseif evenx && ~eveny    % X even and Y uneven
     nx = length(x);
     xe = x;
 
-    ny = ceil(1 + (y(end) - y(1))/dy);   % number of points for Y
+    ny = round(1 + (y(end) - y(1))/dy);   % number of points for Y
     ny = min(ny, nmax);
     ye = linspace(y(1), y(end), ny);
 
@@ -94,7 +94,7 @@ elseif evenx && ~eveny    % X even and Y uneven
 
 elseif ~evenx && eveny    % X uneven and Y even
     
-    nx = ceil(1 + (x(end) - x(1))/dx);   % number of points for X
+    nx = round(1 + (x(end) - x(1))/dx);   % number of points for X
     nx = min(nx, nmax);
     xe = linspace(x(1), x(end), nx);
 
@@ -110,11 +110,11 @@ elseif ~evenx && eveny    % X uneven and Y even
 
 elseif ~evenx && ~eveny   % X and Y both uneven
     
-    nx = ceil(1 + (x(end) - x(1))/dx);   % number of points for X
+    nx = round(1 + (x(end) - x(1))/dx);   % number of points for X
     nx = min(nx, nmax);
     xe = linspace(x(1), x(end), nx);
 
-    ny = ceil(1 + (y(end) - y(1))/dy);   % number of points for Y
+    ny = round(1 + (y(end) - y(1))/dy);   % number of points for Y
     ny = min(ny, nmax);
     ye = linspace(y(1), y(end), ny);
 

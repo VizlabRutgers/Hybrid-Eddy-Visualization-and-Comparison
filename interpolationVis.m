@@ -72,6 +72,7 @@ for differentEddyIndex=eddyIndex
     
     
     for index=1:1:size(eddyHistory,1)
+%     for index=6:1:8
         % Get each eddy in this eddy path history at this frame 
         % Plot the boundary of this eddy in 2D
 
@@ -91,15 +92,16 @@ for differentEddyIndex=eddyIndex
         BoundaryPlot_handle = plot(ax1,pos(1)+r*sin(t),pos(2)+r*cos(t),'k','linewidth',6);
         hold(ax1,'on');
 
-        eddyIndividual3DVis_inner(data,ax2,z_val, stretchMode, index)
+        eddyIndividual3DVis_inner(data,ax2,z_val, stretchMode, index, size(eddyHistory,1));
     end      
 end
 
 set(ax2,'ZDir','reverse');
 view(3)
-daspect([1 1 500])
+daspect([1 1 100])
 
 cb = colorbar();
+cb.Label.String = "Velocity Magnitude";
 
 
 % grid on;
@@ -110,19 +112,7 @@ cb = colorbar();
 % Remove y axis numbering
 
 
-xticklabels("")
-yticklabels("")
-zticklabels("")
-% Set major Grid lines
-ax.GridLineStyle = '-';
-ax.GridColor = 'k';
-ax.GridAlpha = 1;
-grid on;
-% Set minor Grid lines
-ax.MinorGridLineStyle = '-';
-ax.MinorGridColor = 'b';
-ax.MinorGridAlpha = 0.5;
-grid minor;
+
 
 camlight(ax2);
 lighting(ax2, 'flat');
@@ -132,7 +122,8 @@ lighting(ax2, 'flat');
 startFrame = min(cell2mat(interpolationRecord_filtered(:,3)));
 
 
-for interpolatedEddyIndex = 1:1:size(interpolationRecord_filtered,1)
+% for interpolatedEddyIndex = 1:1:size(interpolationRecord_filtered,1)
+for interpolatedEddyIndex = 4
     interpolationCenter_X = cell2mat(interpolationRecord_filtered(interpolatedEddyIndex,18));
     interpolationCenter_Y = cell2mat(interpolationRecord_filtered(interpolatedEddyIndex,19));
 
@@ -149,7 +140,7 @@ for interpolatedEddyIndex = 1:1:size(interpolationRecord_filtered,1)
 
 
 
-    scatter(ax2,interpolationCenter_X(1) + interpolatedSurfaceOffset_X, interpolationCenter_Y(1) + interpolatedSurfaceOffset_Y, 25,'k',"filled");
+%     scatter(ax2,interpolationCenter_X(1) + interpolatedSurfaceOffset_X, interpolationCenter_Y(1) + interpolatedSurfaceOffset_Y, 25,'k',"filled");
     interpolation_center_handle = plot3(ax2,interpolationCenter_X(:) + interpolatedSurfaceOffset_X, interpolationCenter_Y(:) + interpolatedSurfaceOffset_Y, z_val(1:1:length(interpolationCenter_X)),'k','LineWidth',3);
 
 
@@ -170,6 +161,20 @@ for interpolatedEddyIndex = 1:1:size(interpolationRecord_filtered,1)
 
 
 end
+
+xticklabels("")
+yticklabels("")
+zticklabels("")
+% Set major Grid lines
+ax.GridLineStyle = '-';
+ax.GridColor = 'k';
+ax.GridAlpha = 1;
+grid on;
+% Set minor Grid lines
+ax.MinorGridLineStyle = '-';
+ax.MinorGridColor = 'b';
+ax.MinorGridAlpha = 0.5;
+grid minor;
 
 legend([interpolation_BoundaryPlot_handle,interpolation_center_handle], "interpolation result", "interpolation center");
 end

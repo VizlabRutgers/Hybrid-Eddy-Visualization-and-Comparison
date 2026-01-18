@@ -9,13 +9,11 @@ clear all;
 
 %% The path of Feature tracking result
 
-
 % dataFilePath = "../../NA_5Day_result/";
 % Path = dataFilePath+"Seperated Structures/clockwise/";
 % trackTablePath = dataFilePath+dir(fullfile(dataFilePath,'*.trakTable')).name;
 % % The path of source file (.nc file)
 % srcData="../../NA_dataset/19980701.ocean_5day.nc";
-
 
 % dataFilePath = "../Dataset/North_Pacific/result/";
 % Path = dataFilePath+"Seperated Structures/clockwise/";
@@ -31,13 +29,13 @@ clear all;
 % owDataFilePath="../../FT_OW/1/";
 
 %% na data
-% dataFilePath = "/home/weiping/StorageDisk/NA_data_highResolution/FT_result/"; % Output from the Hybrid Eddy Detection
+% dataFilePath = "/home/weiping/StorageDisk/NA_data_highResolution/hybrid/FT_result/"; % Output from the Hybrid Eddy Detection
 % Path = dataFilePath+"Seperated Structures/";
 % trackTablePath = dataFilePath+dir(fullfile(dataFilePath,"*.trakTable")).name;
 % % The path of source file (.nc file)
 % 
 % % To open a remote dataset, use its URL:
-% srcData='/home/weiping/StorageDisk/NA_data_highResolution/19960101.ocean_5day.nc';
+% srcData='/home/weiping/StorageDisk/NA_data_highResolution/src/19960101.ocean_5day.nc';
 % owDataFilePath="../../FT_OW/1/";
 % 
 % 
@@ -64,41 +62,86 @@ clear all;
 % load("NA_eddy_path.mat");
 % load("NA_eddy_history.mat");
 % load("NA_eddy_graph.mat");
-% eddyPathIndex=1:1:length(eddyPath);
+% % eddyPathIndex=1:1:length(eddyPath);
 % 
-% save("NA_eddy_clk_data.mat", "clockEddy");
-% save("NA_eddy_conclk_data.mat", "conterclockEddy");
-% save("NA_eddy_data.mat", "allEddy");
-% save("NA_eddy_path.mat", "eddyPath");
-% save("NA_eddy_history.mat", "eddyHistory");
-% save("NA_eddy_graph.mat", "G");
-% eddyPathIndex=1:1:length(eddyPath);
-
+% % save("NA_eddy_clk_data.mat", "clockEddy");
+% % save("NA_eddy_conclk_data.mat", "conterclockEddy");
+% % save("NA_eddy_data.mat", "allEddy");
+% % save("NA_eddy_path.mat", "eddyPath");
+% % save("NA_eddy_history.mat", "eddyHistory");
+% % save("NA_eddy_graph.mat", "G");
+% % eddyPathIndex=1:1:length(eddyPath);
 % 
-% 
-% eddyStatistic_NA = array2table(allEddy(:,1:16),...
-%     'VariableNames',{'eddyCenter_x (degree)','eddyCenter_y (degree)','first_point_on_boundary_x', 'first_point_on_boundary_y', 'first_point_on_boundary_z(meter)', ...
-%     'OW (first point)', 'velocity_u (first point)', 'velocity_v (first point)', 'vorticity (first point)', 'salinity (first point)', 'temperature (first point)', 'all zeros (leave for future use)','radius on surface(pixel)', 'clockwiseFlage (clockwise = 1)', 'frameIndex', 'eddyIndex in current frame'});
-% 
+% % 
+% % 
+% % eddyStatistic_NA = array2table(allEddy(:,1:16),...
+% %     'VariableNames',{'eddyCenter_x (degree)','eddyCenter_y (degree)','first_point_on_boundary_x', 'first_point_on_boundary_y', 'first_point_on_boundary_z(meter)', ...
+% %     'OW (first point)', 'velocity_u (first point)', 'velocity_v (first point)', 'vorticity (first point)', 'salinity (first point)', 'temperature (first point)', 'all zeros (leave for future use)','radius on surface(pixel)', 'clockwiseFlage (clockwise = 1)', 'frameIndex', 'eddyIndex in current frame'});
+% % 
 
 
 %% red sea data
-dataFilePath = "/home/weiping/data/ft_changes/FT_result/1/"; % Output from the Hybrid Eddy Detection
+% % dataFilePath = "/home/weiping/data/ft_changes/FT_test/1/"; % Output from the Hybrid Eddy Detection
+% dataFilePath = "/home/weiping/StorageDisk/RedSea/hybrid/FT_result/1/"; % Output from the Hybrid Eddy Detection
+% Path = dataFilePath+"Seperated Structures/";
+% trackTablePath = dataFilePath+dir(fullfile(dataFilePath,"*.trakTable")).name;
+% % The path of source file (.nc file)
+% srcData="/home/weiping/data/SciViz/SciVisContest2020/ensembles/0001/COMBINED_2011013100.nc";
+% owDataFilePath="../../FT_OW/1/";
+% 
+% property.x = "XC";
+% property.y = "YC";
+% property.z = "Z_MIT40";
+% property.u = "U";
+% property.v = "V";
+% property.eta = "ETA";
+% property.temp = "TEMP";
+% property.salt = "SALT";
+% property.time = "T_AX";
+% 
+% 
+% ncid = netcdf.open(srcData);
+% 
+% x_val = ncread(srcData, property.x);
+% y_val = ncread(srcData, property.y);
+% z_val = ncread(srcData, property.z);
+% time_val = ncread(srcData, property.time);
+% 
+% load("Redsea_eddy_clk_data.mat");
+% load("Redsea_eddy_conclk_data.mat");
+% load("Redsea_eddy_data.mat");
+% load("Redsea_eddy_path.mat");
+% load("Redsea_eddy_history.mat");
+% load("Redsea_eddy_graph.mat");
+% eddyPathIndex=1:1:length(eddyPath);
+% % 
+% % save("Redsea_eddy_clk_data.mat", "clockEddy");
+% % save("Redsea_eddy_conclk_data.mat", "conterclockEddy");
+% % save("Redsea_eddy_data.mat", "allEddy");
+% % save("Redsea_eddy_path.mat", "eddyPath");
+% % save("Redsea_eddy_history.mat", "eddyHistory");
+% % save("Redsea_eddy_graph.mat", "G");
+% % eddyPathIndex=1:1:length(eddyPath);
+
+%% Mexico Bay
+
+% dataFilePath = "/home/weiping/data/ft_changes/FT_test/1/"; % Output from the Hybrid Eddy Detection
+dataFilePath = "/home/weiping/StorageDisk/Mexico_Bay/hybrid/FT_result/"; % Output from the Hybrid Eddy Detection
 Path = dataFilePath+"Seperated Structures/";
 trackTablePath = dataFilePath+dir(fullfile(dataFilePath,"*.trakTable")).name;
 % The path of source file (.nc file)
-srcData="/home/weiping/data/SciViz/SciVisContest2020/ensembles/0001/COMBINED_2011013100.nc";
-owDataFilePath="../../FT_OW/1/";
+srcData="/home/weiping/StorageDisk/Mexico_Bay/MexicoBayData.nc4";
+% owDataFilePath="../../FT_OW/1/";
 
-property.x = "XC";
-property.y = "YC";
-property.z = "Z_MIT40";
-property.u = "U";
-property.v = "V";
-property.eta = "ETA";
-property.temp = "TEMP";
-property.salt = "SALT";
-property.time = "T_AX";
+property.x = "Longitude";
+property.y = "Latitude";
+property.z = "Depth";
+property.u = "u";
+property.v = "v";
+property.eta = "nan";
+property.temp = "temperature";
+property.salt = "salinity";
+property.time = "MT";
 
 
 ncid = netcdf.open(srcData);
@@ -106,15 +149,16 @@ ncid = netcdf.open(srcData);
 x_val = ncread(srcData, property.x);
 y_val = ncread(srcData, property.y);
 z_val = ncread(srcData, property.z);
+time_val = ncread(srcData, property.time);
 
-load("Redsea_eddy_clk_data.mat");
-load("Redsea_eddy_conclk_data.mat");
-load("Redsea_eddy_data.mat");
-load("Redsea_eddy_path.mat");
-load("Redsea_eddy_history.mat");
-load("Redsea_eddy_graph.mat");
-eddyPathIndex=1:1:length(eddyPath);
-
+% load("MexicoBay_eddy_clk_data.mat");
+% load("MexicoBay_eddy_conclk_data.mat");
+% load("MexicoBay_eddy_data.mat");
+% load("MexicoBay_eddy_path.mat");
+% load("MexicoBay_eddy_history.mat");
+% load("MexicoBay_eddy_graph.mat");
+% eddyPathIndex=1:1:length(eddyPath);
+% 
 % save("Redsea_eddy_clk_data.mat", "clockEddy");
 % save("Redsea_eddy_conclk_data.mat", "conterclockEddy");
 % save("Redsea_eddy_data.mat", "allEddy");
@@ -122,6 +166,7 @@ eddyPathIndex=1:1:length(eddyPath);
 % save("Redsea_eddy_history.mat", "eddyHistory");
 % save("Redsea_eddy_graph.mat", "G");
 % eddyPathIndex=1:1:length(eddyPath);
+
 
 %% Parameters of limitation
 
@@ -132,9 +177,10 @@ spaceLimit.y1 = y_val(end);
 livingFrameLimit = 0;
 durationLimit = 3;
 frameLimit.min = 1;
-frameLimit.max = length(ncread(srcData, property.time));
+frameLimit.max = inf;
 radiusLimit.lower = 3;
 radiusLimit.upper = inf;
+
 
 %% Pre-processing (not necessary if you load data before)
 % % Read Eddy detection information
@@ -144,6 +190,7 @@ radiusLimit.upper = inf;
 % Read eddy track information
 
 [eddyPath,eddyNodes,G] = eddyActivity(trackTablePath);
+eddyPathIndex=1:1:length(eddyPath);
 % Gulf stream extraction and filter
 % Get the Gulf stream
 % Will be used to distinguish either the eddy it above / below the Gulf
@@ -191,7 +238,7 @@ eddyHistory = eddyPathProcess(clockEddy,conterclockEddy,eddyPath, ...
 % Get the global eddy path statistics information. 
 % Including movement distance, existing time, 
 
-EddyNumRecord = eddyStatFunc(clockEddy,conterclockEddy,eddyHistory,srcData, ...
+[clkEddyStat, conclkEddyStat, EddyNumRecord ] = eddyStatFunc(clockEddy,conterclockEddy,eddyHistory,srcData, ...
     property,durationLimit, frameLimit, z_val);
 
 %% Eddy path statistics
@@ -254,9 +301,9 @@ eddyVis_vertClip(eddyPathNum,G,eddyPath,eddyHistory,dataFilePath,srcData, proper
 % eddyIndividualVisIndex = 5069;
 eddyIndividualVisIndex = 10024;
 eddyIndividualVisIndex = 12433;
-stretchMode = 2;
+stretchMode = 1;
 
-eddyPathIndex=1:1:length(eddyPath);
+
 eddyIndividualVisIndex = 11;
 eddyIndividualVis(eddyPathIndex,G,eddyPath,eddyHistory,dataFilePath,srcData, property, eddyIndividualVisIndex,stretchMode);
 
@@ -264,11 +311,23 @@ eddyIndividualVis(eddyPathIndex,G,eddyPath,eddyHistory,dataFilePath,srcData, pro
 % You could use this to visualize global distribution
 
 eddyGlobalVis(allEddy, 1, srcData, radiusLimit, property,dataFilePath);
+%% filter Eddy
+
+
+testEddy = allEddy(allEddy(:,15) == 73,:);
+eddyFrame = 73;
+eddyIndex = 376;
+
+eddyHistory_toBeFiltered = cellfun(@(x) x(end,:), eddyHistory);
+eddyHistory_toBeFiltered = cell2mat(eddyHistory_toBeFiltered);
+[~,loc] = ismember(testEddy(145,:),eddyHistory_toBeFiltered,"rows");
+
 %% Visualize path
 % You could use this to visualize an eddy path
 % You need to change the variable name for the NC file inside the function
 % This is the function that generate videos
 
+eddyPathIndex = 5;
 eddyVis(eddyPathIndex,G,eddyPath,eddyHistory,dataFilePath,srcData, property);
 
 
@@ -298,8 +357,12 @@ centroid_test(:,1) = (centroid_test(:,1)-30)/0.04;
 centroid_test(:,2) = (centroid_test(:,2)-10)/0.04;
 
 %% Self-define
-frameIndex = 19:1:20;
-eddyPathIndex = 11;
+% 
+% eddyPathIndex = 11;
+% frameIndex = 18:1:19;
+
+eddyPathIndex = 10024;
+frameIndex = 36;
 
 selfDefineVis(allEddy, frameIndex, eddyPathIndex, srcData, property,dataFilePath,eddyHistory);
 
@@ -311,7 +374,7 @@ interpolationRecord = [];
 % for eddyNumber=41
 % for eddyNumber=1:1:length(eddyHistory)
 % for eddyNumber=11
-for eddyNumber=10063
+for eddyNumber=10024
 
     evaluationResult = eddyInterpolation(eddyPathIndex,G,eddyPath,eddyHistory,dataFilePath,srcData, property, eddyNumber);
     interpolationRecord = [interpolationRecord; evaluationResult];
@@ -319,7 +382,7 @@ for eddyNumber=10063
 end
 
 stride4Test = 2;
-stretchMode = 1;
+stretchMode = 2;
 interpolationVis(srcData, property, eddyNumber, eddyHistory,dataFilePath, interpolationRecord, stride4Test, stretchMode);
 
 
@@ -336,4 +399,86 @@ save("./interpolationEvaluation.mat","interpolationEvalutation");
 load("./interpolationEvaluation.mat");
 
 
+%% long-short eddy sudden change
+% 1 - centerX
+% 2 - centerY
+% 3 - depth (layer)
+% 4 - eccentricity
+% 5 - longAxis
+% 6 - shortAxis
 
+
+windingAngleSummary = load("/home/weiping/StorageDisk/Mexico_Bay/windingAngle/OriginalData/MexicoBay_originalWindingAngle_eddySummary.mat").eddySummary_originalWindingAngle;
+
+
+
+%% Cluster 3D windingAngle centroids and corresponding volumes
+saveDir = "~/StorageDisk/Mexico_Bay/windingAngle/data_afterClustering_originalWindingAngle/";
+dataResolution = 0.04;
+% for timeIndex = 1:1:2
+for timeIndex = 1:1:length(windingAngleSummary)
+    windingAngleEddySummrayInFrame = windingAngleSummary{timeIndex};
+    [windingAngleTracks, eddy_ellipse_objects] = cluster3Dpoints(windingAngleEddySummrayInFrame, 0.1,x_val,y_val,z_val,dataResolution);
+    
+    for objectIndex = 1:1:length(eddy_ellipse_objects)
+        currentObject = eddy_ellipse_objects{objectIndex};
+        writematrix(currentObject, saveDir+"Frame_"+num2str(timeIndex)+"_ellipsoidEddy_"+num2str(objectIndex)+".txt",'Delimiter',' ')  
+    end
+    
+end
+
+%% comparing between winding angle and hyrbid eddy detection
+v = VideoWriter('Hybrid_WindingAngle_Comparison.mp4');
+v.FrameRate=1;
+v.Quality=100;
+open(v);
+dataResolution = 0.04;
+for timeIndex = 1
+% for timeIndex = 1:1:length(time_val)
+% for timeIndex = 1:1:length(windingAngleSummary)
+    windingAngleEddySummrayInFrame = windingAngleSummary{timeIndex};
+    [windingAngleTracks, eddy_ellipse_objects] = cluster3Dpoints(windingAngleEddySummrayInFrame, 0.1,x_val,y_val,z_val,dataResolution);
+
+    % match winding angle with hybrid on vertical layers
+    hybridTracks = allEddy(allEddy(:,15)==timeIndex,:);
+    [matches,unMatchWindingAngle,unMatchHybrid] = matchTracks(windingAngleTracks, hybridTracks, 1.5);
+    % winding angle - hyrbid match visualization
+    
+    VisWindingAngleHybrid(srcData, property, dataFilePath, allEddy, windingAngleSummary, windingAngleTracks, matches, unMatchHybrid,timeIndex,eddy_ellipse_objects);
+    F1=getframe(gcf);
+    writeVideo(v,F1);
+end
+close(v);
+
+
+%% Check eddy sudden change
+eddySuddenChangeStat(srcData, property, dataFilePath, allEddy, windingAngleSummary);
+
+
+
+
+
+%% Eddy time series visualization
+
+
+clkRows = find(clkEddyStat.movingDistance>500);
+clkEddyID = table2array(clkEddyStat(clkRows,"id"));
+
+conclkRows = find(conclkEddyStat.movingDistance>500);
+conclkEddyID = table2array(conclkEddyStat(conclkRows,"id"));
+
+eddyIndex = [3670,5069,10024,12433];
+eddyIndex = [clkEddyID; conclkEddyID];
+eddyIndex = [13016];
+eddyIndex = [5069];
+eddyTimeSeries3DVis(srcData, property, eddyIndex, eddyHistory,dataFilePath);
+
+%% eddy biovis
+
+eddyPathIndex = 10;
+eddyBioVis(srcData, property, dataFilePath, allEddy, eddyHistory,eddyPathIndex);
+
+%% eddy biovis surface
+timeIndex = 2;
+
+eddyBioVis_surface(srcData, property, dataFilePath, allEddy, eddyHistory,timeIndex);

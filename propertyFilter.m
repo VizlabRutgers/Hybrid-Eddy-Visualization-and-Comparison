@@ -1,14 +1,10 @@
-function [outputEddy] = propertyFilter(inputEddy,spaceLimit, radiusLimit, streamRidge, x_val, y_val, northFlag)
+function [outputEddy] = propertyFilter(inputEddy,spaceLimit, streamRidge, x_val, y_val, northFlag)
 %PROPERTYFILTER 此处显示有关此函数的摘要
 %   此处显示详细说明
 inputEddy(inputEddy(:,1)<spaceLimit.x0,:) = [];
 inputEddy(inputEddy(:,1)>spaceLimit.x1,:) = [];
 inputEddy(inputEddy(:,2)<spaceLimit.y0,:) = [];
 inputEddy(inputEddy(:,2)>spaceLimit.y1,:) = [];
-
-inputEddy(inputEddy(:,13)<radiusLimit.lower,:) = [];
-inputEddy(inputEddy(:,13)>radiusLimit.upper,:) = [];
-
 
 [~, lower_x] = min(abs(x_val - spaceLimit.x0));
 [~, upper_x] = min(abs(x_val - spaceLimit.x1));

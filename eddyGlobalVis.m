@@ -6,7 +6,7 @@ function [] = eddyGlobalVis(allPath, FrameNum, srcData,sizeLimit, property,dataF
 % patchSize: Decide the size of patch
 %   Detailed explanation goes here
 %------------------------------------
-%     close all;
+    close all;
 
     % Read data
     x_val = double(ncread(srcData, property.x));
@@ -155,7 +155,7 @@ function [] = eddyGlobalVis(allPath, FrameNum, srcData,sizeLimit, property,dataF
                 
     set(ax2, 'ZDir', 'reverse');
     set(ax2, 'YDir', 'normal');
-    set(ax2, 'XDir', 'reverse');
+    set(ax2, 'XDir', 'normal');
     daspect(ax2, [1,1,500]);
     hold on
 %     quiver(ax2, x_Rgrid2D,y_Rgrid2D,u_val(:,:,1),v_val(:,:,1),10,'r','AutoScaleFactor',0.5);

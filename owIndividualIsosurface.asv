@@ -1,0 +1,27 @@
+function [] = owIndividualIsosurface(agridX, gridY, gridZ, minX_index, maxX_index, minY_index, maxY_index, dataVolume, voxel_threshold)
+%OWINDIVIDUALISOSURFACE 此处显示有关此函数的摘要
+%   此处显示详细说明
+
+data_filtered = dataVolume(minX_index-10:maxX_index+10, minY_index-10:maxY_index+10,:);
+data_filtered(data_filtered>0) = NaN;
+% Step 2: 连通区域分析
+CC = bwconncomp(data_filtered, 26);  % 26 表示3D全连通
+
+% Step 3: 计算每个区域体素数
+numPixels = cellfun(@numel, CC.PixelIdxList);
+
+% Step 4: 设置体素数量阈值（如小于100的去掉）
+validIdx = find(numPixels >= voxel_threshold);
+
+% Step 5: 创建新的掩码，只保留满足条件的区域
+BW_filtered = false(size(data_filtered));
+for i = 1:length(validIdx)
+    BW_filtered(CC.PixelIdxList{validIdx(i)}) = true;
+end
+
+figure,
+isosurface(gridX, gridY, gridZ,BW_filtered, 0.5);
+hold on
+
+end
+

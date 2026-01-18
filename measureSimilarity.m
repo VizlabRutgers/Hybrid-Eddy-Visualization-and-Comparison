@@ -15,7 +15,7 @@ if(length(f1) == length(f2))
     else
         corrDistance = fixedCorr(f1,f2);
     end
-    ssimDistance = ssim(f1,f2);
+    ssimDistance = ssim(f1',f2');
 elseif(length(f1) > length(f2))
     f2_fillZero = [f2, zeros(1,length(f1) - length(f2))];
     scaleRatio = length(f1)/length(f2);
